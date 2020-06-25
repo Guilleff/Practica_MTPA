@@ -32,6 +32,8 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     private InputStream flujoLectura;
     private OutputStream flujoEscritura;
     
+    private String accion;
+    
     
     //esto es solo para hacer pruebas borrar ya que se tiene que crear desde cliente
     public static void main(String args[]){
@@ -48,7 +50,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         this.setTitle("IULogin");
         this.setSize(500, 250);
         this.setLayout(null);
-        AccesoBoton = new JButton("Acceder");
+        AccesoBoton = new JButton("Iniciar Sesion");
         RegistroBoton = new JButton("Registrarse");
         usuarioLabel = new JLabel("Usuario");
         contraseñaLabel = new JLabel("Contraseña");
@@ -68,7 +70,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         add(contraseñaText);
         contraseñaText.setBounds(200,80,150,25);
         add(AccesoBoton);
-        AccesoBoton.setBounds(150,130,100,50);
+        AccesoBoton.setBounds(150,130,125,50);
         add(RegistroBoton);
         RegistroBoton.setBounds(300,130,110,50);
         
@@ -90,16 +92,18 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
             System.out.println("No se pudo conectar con el servidor");
         }
     }
-    
+    //seguir aqui
     @Override
     public void run(){
-        try {
+       try {
             //hay que mandar las dos cosas juntas, ponlo en un mensaje de bytes(nuevo metodo)
-            this.flujoEscritura.write(usuarioText.getText().getBytes());
+            this.flujoEscritura.write(toString(usuarioText.getText(),contraseñaText.getText(),accion).getBytes());
+            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));//borrar
             
-        } catch (IOException ex) {
-            System.out.println("No se pudo enviar el mensaje");
-        }
+            
+       } catch (IOException ex) {
+           System.out.println("No se pudo enviar el mensaje");
+       }
     }
     
     
@@ -109,10 +113,9 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         if(e.getSource() == AccesoBoton){
             if(CamposVacios(usuarioText.getText(),contraseñaText.getText())==true){
                 JOptionPane.showMessageDialog(this, "Campos no completados", "Error", JOptionPane.INFORMATION_MESSAGE, null);
-                
-                //dispose(); //cierra la ventan del jframe
             }
             else{
+                accion="Acceso";
                 initComunication();
             }
         }
@@ -121,6 +124,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
                 JOptionPane.showMessageDialog(this, "Campos no completados", "Error", JOptionPane.INFORMATION_MESSAGE, null);
             }
             else{
+                accion="Registro";
                 initComunication();
             }
         }
@@ -135,4 +139,9 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         }
     }
     
+    
+    public String toString(String user, String passw, String accion){
+        return accion+"@"+user+"@"+passw;
+    }
 }
+//dispose(); //cierra la ventan del jframe
