@@ -97,8 +97,9 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     public void run(){
        try {
             //hay que mandar las dos cosas juntas, ponlo en un mensaje de bytes(nuevo metodo)
-            this.flujoEscritura.write(toString(usuarioText.getText(),contraseñaText.getText(),accion).getBytes());
-            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));//borrar
+            this.flujoEscritura.write(toString(usuarioText.getText(),contraseñaText.getText(),accion).getBytes("UTF-8"));
+            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));
+            //aqui bucle de leer
             
             
        } catch (IOException ex) {
@@ -144,4 +145,4 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         return accion+"@"+user+"@"+passw;
     }
 }
-//dispose(); //cierra la ventan del jframe
+//dispose(); //cierra la ventan del jframe, creo que no va a hacer falta, ya que cambiare IULogin a Cliente
