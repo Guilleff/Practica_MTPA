@@ -38,16 +38,17 @@ public class Servidor {
 
 
         }while (nb > 0 && is.available() > 0);
-        System.out.println(buffer);
-        Mensaje msg=Mensaje.CrearMensaje(buffer);
+        
+        Mensaje msg=Mensaje.CrearMensaje(baos.toByteArray());
         
         
         
-        String permiso=Llamar_accion(msg);
+        String permiso=LlamarAccion(msg);
         
         Mensaje mensajeCliente=Mensaje.CrearMensajeConParametros(permiso, msg.getParam1(), msg.getParam2());
-        os.write(mensajeCliente.toString().getBytes());
-        //seguir aqui, leer este mensaje por parte del cliente
+        os.write(mensajeCliente.toString().getBytes("UTF-8"));
+        
+        
         
         /*
         String loquemeLlega = new String(baos.toByteArray());
@@ -58,7 +59,7 @@ public class Servidor {
     
   }
   
-  public static String Llamar_accion(Mensaje msg){
+  public static String LlamarAccion(Mensaje msg){
       //implementar logica del server
       try{
         switch(msg.getAccion()){
@@ -66,6 +67,8 @@ public class Servidor {
               {
                   try {
                       if(IniciarSesion(msg.getParam1(),msg.getParam2())==true){
+                          //añadir un nuevo skc cliente a la ArrayList<Cliente> y cerrar este socket
+                          
                           return "Aceptado";
                       }
                       else{
@@ -80,10 +83,12 @@ public class Servidor {
               {
                   try {
                       if(RegistrarUsuario(msg.getParam1(),msg.getParam2())==true){
+                          //añadir un nuevo skc cliente a la ArrayList<Cliente> y cerrar este socket
+                          
                           return "Aceptado";
                       }
                       else{
-                          return "Denegado";
+                          return "DenegadoE";
                       }
                   } catch (IOException ex) {
                       System.out.println("No se encontro el archivo");

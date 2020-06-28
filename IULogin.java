@@ -4,6 +4,7 @@ package piedrapapeltijera;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +36,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     private String accion;
     
     
-    //esto es solo para hacer pruebas borrar ya que se tiene que crear desde cliente
+   
     public static void main(String args[]){
         IULogin prueba= new IULogin();
     }
@@ -46,7 +47,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         
     }
     public void initComponents(){
-        /*Definicion de atributos de la ventana*/
+        
         this.setTitle("IULogin");
         this.setSize(500, 250);
         this.setLayout(null);
@@ -57,10 +58,10 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         usuarioText = new JTextField(20);
         contraseñaText = new JTextField(20);
         
-        /*Action Listeners*/
+       
         AccesoBoton.addActionListener(this);
         RegistroBoton.addActionListener(this);
-        /*Inicializacion Panel*/
+       
         add(usuarioLabel);
         usuarioLabel.setBounds(50,40,50,25);
         add(usuarioText);
@@ -87,7 +88,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
             Thread hilo = new Thread(this);
             hilo.start();
         }
-        catch(Exception ex)
+        catch(IOException ex)
         {
             System.out.println("No se pudo conectar con el servidor");
         }
@@ -98,8 +99,26 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
        try {
             //hay que mandar las dos cosas juntas, ponlo en un mensaje de bytes(nuevo metodo)
             this.flujoEscritura.write(toString(usuarioText.getText(),contraseñaText.getText(),accion).getBytes("UTF-8"));
-            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));
+            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));//borrar
             //aqui bucle de leer
+            
+                byte[] buffer = new byte[16];
+                int nb; //Cuantos bytes he leido
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                do{
+                    nb = flujoLectura.read(buffer); //suma@389@556
+                    baos.write(buffer, 0, nb);
+                }while (nb > 0 && flujoLectura.available() > 0);
+                
+                Mensaje msg=Mensaje.CrearMensaje(baos.toByteArray());
+                
+                System.out.println(msg.getAccion());
+                
+                LlamarAccionLogin(msg);
+                
+                
+                String loquemeLlega = new String(baos.toByteArray());
+                System.out.println(loquemeLlega);
             
             
        } catch (IOException ex) {
@@ -144,5 +163,35 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     public String toString(String user, String passw, String accion){
         return accion+"@"+user+"@"+passw;
     }
+    
+    public void LlamarAccionLogin(Mensaje msg){
+        switch(msg.getAccion()){
+            case "Aceptado":
+                //dispose(), cierra la ventana jframe ya que no la voy a utlilizar mas y se va a abrir la de cliente desde el servidor, tambien cerrar el socket antes de dispose
+                
+                break;
+            case "Denegado":
+                try {
+                    //cerrar sck creo
+                    cliente.close();
+                } catch (IOException ex) {
+                    System.out.println("No se pudo cerrar el socket");
+                }
+                System.out.println("Usuario o contraseña no validas");
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña no validas", "Error", JOptionPane.INFORMATION_MESSAGE, null);
+                break;
+            case "DenegadoE":
+                try {
+                    //cerrar sck creo
+                    cliente.close();
+                } catch (IOException ex) {
+                    System.out.println("No se pudo cerrar el socket");
+                }
+                JOptionPane.showMessageDialog(this, "Usuario ya existe", "Error", JOptionPane.INFORMATION_MESSAGE, null);
+                break;
+        }
+    }
+    
+    
 }
 //dispose(); //cierra la ventan del jframe, creo que no va a hacer falta, ya que cambiare IULogin a Cliente
