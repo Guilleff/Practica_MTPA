@@ -12,11 +12,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
 
 public class Servidor {
+    
+    private static ArrayList<Cliente> usuariosConectados = new ArrayList<>();
+    
     public static void main (String args[]) throws Exception
   {
     
@@ -43,7 +45,7 @@ public class Servidor {
         
         
         
-        String permiso=LlamarAccion(msg);
+        String permiso=LlamarAccion(msg,sck);
         
         Mensaje mensajeCliente=Mensaje.CrearMensajeConParametros(permiso, msg.getParam1(), msg.getParam2());
         os.write(mensajeCliente.toString().getBytes("UTF-8"));
@@ -59,7 +61,7 @@ public class Servidor {
     
   }
   
-  public static String LlamarAccion(Mensaje msg){
+  public static String LlamarAccion(Mensaje msg,Socket socket){
       //implementar logica del server
       try{
         switch(msg.getAccion()){
@@ -67,8 +69,7 @@ public class Servidor {
               {
                   try {
                       if(IniciarSesion(msg.getParam1(),msg.getParam2())==true){
-                          //añadir un nuevo skc cliente a la ArrayList<Cliente> y cerrar este socket
-                          
+                          AceptarCliente(socket,msg.getParam1(),msg.getParam2());
                           return "Aceptado";
                       }
                       else{
@@ -83,8 +84,7 @@ public class Servidor {
               {
                   try {
                       if(RegistrarUsuario(msg.getParam1(),msg.getParam2())==true){
-                          //añadir un nuevo skc cliente a la ArrayList<Cliente> y cerrar este socket
-                          
+                          AceptarCliente(socket,msg.getParam1(),msg.getParam2());
                           return "Aceptado";
                       }
                       else{
@@ -140,7 +140,10 @@ public class Servidor {
       return true;
   }
   
-  
+  public static void AceptarCliente(Socket sck,String user,String passw){
+      Cliente cliente = new Cliente(sck,user,passw);
+      usuariosConectados.add(cliente);
+  }
   
   
 }
