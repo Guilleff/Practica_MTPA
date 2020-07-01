@@ -145,5 +145,13 @@ public class Servidor {
       usuariosConectados.add(cliente);
   }
   
+  public static ArrayList<String> ListarClientes(){
+      ArrayList<String> users=new ArrayList<String>();
+      for (Cliente unusuario : usuariosConectados){
+          users.add(unusuario.getUsuario());
+          System.out.println(unusuario.getUsuario());
+      }
+      return users;
+  }
   
 }

@@ -168,7 +168,7 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         switch(msg.getAccion()){
             case "Aceptado":
                 //dispose(), cierra la ventana jframe ya que no la voy a utlilizar mas y se va a abrir la de cliente desde el servidor, tambien cerrar el socket antes de dispose
-                
+                dispose();
                 break;
             case "Denegado":
                 try {
