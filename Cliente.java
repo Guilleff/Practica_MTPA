@@ -3,18 +3,23 @@ package piedrapapeltijera;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
-import javax.swing.WindowConstants;
+
 
 public class Cliente extends JFrame implements ActionListener,Runnable{
     
@@ -35,6 +40,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     private JLabel UsuariosInfo;
     private JList UsuariosConectados;
+    DefaultListModel<String>model=new DefaultListModel<>();
     String[] datos={"hola","adios"};//borrar
     
     
@@ -72,15 +78,8 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     @Override
     public void run(){
-        //esto no va,seguir aqui
-        ArrayList<String> otrosUsuarios=new ArrayList<String>();
-        otrosUsuarios=Servidor.ListarClientes();
-        String[] aux = otrosUsuarios.toArray(new String[otrosUsuarios.size()]);
-        DefaultListModel<String>model=new DefaultListModel<>();
+        //seguir aqui, poner que cada vez que entre un user actualizar a todos
         
-        for(String user:aux){
-            model.addElement(user);
-        }
         
         
     }
@@ -98,12 +97,14 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         this.setTitle(getUsuario());
         this.setSize(380,450);
         this.setLayout(null);
+        
         RetarA=new JLabel("Indica el jugador que retar");//clica sobre el jugador, esto ponerlo mejor
         RetarAText=new JTextField(20);
         RetarAButton=new JButton("Enviar Reto");
         
         UsuariosInfo=new JLabel("Usuarios conectados");
-        UsuariosConectados=new JList<String>(datos);
+        
+        UsuariosConectados=new JList(model);
         
         RetadoPor=new JLabel("No tienes retos pendientes");//"Has sido retado por:"+usuario
         AceptarReto= new JButton("Aceptar");
@@ -136,6 +137,20 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         
         this.setVisible(true);
         
+        
+        addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            try {
+                //Hacer lo que yo quiero
+                Servidor.EliminarCliente(usuario);
+                sckCliente.close();
+            } catch (IOException ex) {
+                System.out.println("No se pudo cerrar el socket");
+            }
+        }
+        });
+        
     }
     
     
@@ -143,6 +158,23 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     public String getUsuario() {
         return usuario;
     }
+
+    public void ActualizarJList(){
+        ArrayList<String> otrosUsuarios=new ArrayList<String>();
+        otrosUsuarios=Servidor.ListarClientes();
+        String[] aux = otrosUsuarios.toArray(new String[otrosUsuarios.size()]);
+        model.clear();
+        
+        for(String user:aux){
+            model.addElement(user);
+        }
+    }
+    
+    
+
+   
+
+    
 
     
     

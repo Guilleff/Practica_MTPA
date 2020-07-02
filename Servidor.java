@@ -143,13 +143,28 @@ public class Servidor {
   public static void AceptarCliente(Socket sck,String user,String passw){
       Cliente cliente = new Cliente(sck,user,passw);
       usuariosConectados.add(cliente);
+      usuariosConectados.forEach((actualizar) -> {
+          actualizar.ActualizarJList();
+        });
+  }
+  public static void EliminarCliente(String cli){
+      ArrayList<Cliente> listaAux=new ArrayList<Cliente>();
+      for(Cliente user: usuariosConectados){
+          if(user.getUsuario().equals(cli)){
+              //ConcurrentModificationException arreglar esto, es por culpa de quitar en usuariosConectados ya que la uso para el bucle for y se raya  
+              listaAux.add(user);
+          }
+      }
+      usuariosConectados.removeAll(listaAux);
+      usuariosConectados.forEach((user) -> {
+          user.ActualizarJList();
+        });
   }
   
   public static ArrayList<String> ListarClientes(){
       ArrayList<String> users=new ArrayList<String>();
       for (Cliente unusuario : usuariosConectados){
           users.add(unusuario.getUsuario());
-          System.out.println(unusuario.getUsuario());
       }
       return users;
   }
