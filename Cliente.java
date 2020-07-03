@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -18,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 
@@ -40,8 +42,9 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     private JLabel UsuariosInfo;
     private JList UsuariosConectados;
-    DefaultListModel<String>model=new DefaultListModel<>();
-    String[] datos={"hola","adios"};//borrar
+    
+    private DefaultListModel<String>model=new DefaultListModel<>();
+    private ArrayList<String> otrosUsuarios=new ArrayList<String>();
     
     
     //solo sirve para comprobar las cosas sin tener que venir desde iulogin--->server--->cliente
@@ -78,7 +81,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     @Override
     public void run(){
-        //seguir aqui, poner que cada vez que entre un user actualizar a todos
+        //seguir aqui, mover initComponents aqui
         
         
         
@@ -87,9 +90,14 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == RetarAButton){
-            
+            if(CampoVacio(RetarAText.getText())==false && UsuarioEnJList(RetarAText.getText())==true){
+                RetarAText.getText();//enviar esto al servidor, hacer un metodo que sea retarA
+                JOptionPane.showMessageDialog(this, "Has enviado un reto a "+RetarAText.getText(), "Reto enviado", JOptionPane.INFORMATION_MESSAGE, null);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Usuario no valido", "Error", JOptionPane.INFORMATION_MESSAGE, null);
+            }
         }
-        
     }
        
     public void initComponents(){
@@ -142,7 +150,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         @Override
         public void windowClosing(WindowEvent e) {
             try {
-                //Hacer lo que yo quiero
                 Servidor.EliminarCliente(usuario);
                 sckCliente.close();
             } catch (IOException ex) {
@@ -153,14 +160,12 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         
     }
     
-    
-    
     public String getUsuario() {
         return usuario;
     }
 
     public void ActualizarJList(){
-        ArrayList<String> otrosUsuarios=new ArrayList<String>();
+        
         otrosUsuarios=Servidor.ListarClientes();
         String[] aux = otrosUsuarios.toArray(new String[otrosUsuarios.size()]);
         model.clear();
@@ -170,7 +175,22 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         }
     }
     
+    public boolean CampoVacio(String text){
+        return text.equals(""); 
+    }
     
+    public boolean UsuarioEnJList(String text){
+        for (String user : otrosUsuarios) {
+            if(user.equals(text)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void Retado(){
+        
+    }
 
    
 
