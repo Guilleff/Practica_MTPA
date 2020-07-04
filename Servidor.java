@@ -68,7 +68,7 @@ public class Servidor {
             case "Acceso":
               {
                   try {
-                      if(IniciarSesion(msg.getParam1(),msg.getParam2())==true){
+                      if(IniciarSesion(msg.getParam1(),msg.getParam2())==true && UsuarioYaConectado(msg.getParam1())==false){
                           AceptarCliente(socket,msg.getParam1(),msg.getParam2());
                           return "Aceptado";
                       }
@@ -110,7 +110,7 @@ public class Servidor {
           String[] parte=linea.split(";");
           String usuario = parte[0];
           String contraseña = parte[1];
-          if(user.equals(usuario) && passw.equals(contraseña)){
+          if(user.equals(usuario) && passw.equals(contraseña)){//poner que no se puede entrar con un usuario si esta conectado
               ficheroLeer.close();
               return true;
         }
@@ -118,6 +118,16 @@ public class Servidor {
       ficheroLeer.close();
       return false;
   }
+  
+  public static boolean UsuarioYaConectado(String user){
+      for(Cliente aux: usuariosConectados){
+          if(aux.getUsuario().equals(user)){
+              return true;
+          }
+      }
+      return false;
+  }
+  
   
   public static boolean RegistrarUsuario(String user,String passw) throws FileNotFoundException, IOException{
       String linea;
@@ -151,7 +161,6 @@ public class Servidor {
       ArrayList<Cliente> listaAux=new ArrayList<Cliente>();
       for(Cliente user: usuariosConectados){
           if(user.getUsuario().equals(cli)){
-              //ConcurrentModificationException arreglar esto, es por culpa de quitar en usuariosConectados ya que la uso para el bucle for y se raya  
               listaAux.add(user);
           }
       }
@@ -169,4 +178,19 @@ public class Servidor {
       return users;
   }
   
+  public static void RetarA(String Retador,String Retado){
+      for (Cliente unusuario : usuariosConectados){
+          if(unusuario.getUsuario().equals(Retado)){
+              unusuario.RetadoPor(Retador);
+          }
+      }
+  }
+  
+  public static void RetoRechazado(String Retado,String Retador){
+      for (Cliente unusuario : usuariosConectados){
+          if(unusuario.getUsuario().equals(Retador)){
+              unusuario.RechazaronReto(Retado);
+          }
+      }
+  }
 }
