@@ -167,12 +167,10 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     public void LlamarAccionLogin(Mensaje msg){
         switch(msg.getAccion()){
             case "Aceptado":
-                //dispose(), cierra la ventana jframe ya que no la voy a utlilizar mas y se va a abrir la de cliente desde el servidor, tambien cerrar el socket antes de dispose
                 dispose();
                 break;
             case "Denegado":
                 try {
-                    //cerrar sck creo
                     cliente.close();
                 } catch (IOException ex) {
                     System.out.println("No se pudo cerrar el socket");
@@ -194,4 +192,3 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
     
     
 }
-//dispose(); //cierra la ventan del jframe, creo que no va a hacer falta, ya que cambiare IULogin a Cliente

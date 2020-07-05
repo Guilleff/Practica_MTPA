@@ -110,7 +110,7 @@ public class Servidor {
           String[] parte=linea.split(";");
           String usuario = parte[0];
           String contraseña = parte[1];
-          if(user.equals(usuario) && passw.equals(contraseña)){//poner que no se puede entrar con un usuario si esta conectado
+          if(user.equals(usuario) && passw.equals(contraseña)){
               ficheroLeer.close();
               return true;
         }

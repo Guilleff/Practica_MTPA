@@ -23,11 +23,10 @@ import javax.swing.JTextField;
 public class Cliente extends JFrame implements ActionListener,Runnable{
     
     private Socket sckCliente;
-    private InputStream flujoLectura;
+    InputStream flujoLectura;
     private OutputStream flujoEscritura;
     private String usuario;
     private String contraseña;
-    
     
     private JLabel RetadoPor;
     private String Retador;
@@ -51,8 +50,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         this.flujoEscritura=this.sckCliente.getOutputStream();
         this.usuario=user;
         this.contraseña=passw;
-        //inicializar JFrame con sus componentes
-        initComponents();
         Thread hiloCliente = new Thread(this);
         hiloCliente.start();
         
@@ -63,10 +60,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     @Override
     public void run(){
-        //mover initComponents aqui
-        
-        
-        
+        initComponents();
     }
     
     @Override
@@ -82,6 +76,9 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         }
         else if(e.getSource()==AceptarReto){
             //seguir aqui
+            Partida p= new Partida(this,this);//esto esta mal todavia
+            
+            
         }
         else if(e.getSource()==RechazarReto){
             Servidor.RetoRechazado(usuario, Retador);
@@ -90,7 +87,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     }
        
     public void initComponents(){
-        //panel.updateUI() puede que tenga que usar esto
+        
         this.setTitle(getUsuario());
         this.setSize(380,450);
         this.setLayout(null);
