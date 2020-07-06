@@ -21,9 +21,12 @@ import javax.swing.JTextField;
 
 
 public class Cliente extends JFrame implements ActionListener,Runnable{
+
+    
+    
     
     private Socket sckCliente;
-    InputStream flujoLectura;
+    private InputStream flujoLectura;
     private OutputStream flujoEscritura;
     private String usuario;
     private String contraseña;
@@ -42,6 +45,8 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
     private DefaultListModel<String>model=new DefaultListModel<>();
     private ArrayList<String> otrosUsuarios=new ArrayList<String>();
+    
+    private String accion;
     
     public Cliente(Socket sck,String user,String passw){
         try{
@@ -76,8 +81,8 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         }
         else if(e.getSource()==AceptarReto){
             //seguir aqui
-            Partida p= new Partida(this,this);//esto esta mal todavia
-            
+            Partida p= new Partida(this,Retador);//esto esta mal todavia,faltan cosas
+            Servidor.RetoAceptado(usuario,Retador);
             
         }
         else if(e.getSource()==RechazarReto){
@@ -150,6 +155,15 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     public String getUsuario() {
         return usuario;
     }
+    
+    public String getAccion() {
+        return accion;
+    }
+
+    
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
 
     public void ActualizarJList(){
         
@@ -192,4 +206,9 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     public void RechazaronReto(String Retado){
         JOptionPane.showMessageDialog(this, "El usuario "+Retado+" no acepto tu reto", "Reto rechazado", JOptionPane.INFORMATION_MESSAGE, null);
     }
+    
+    public void AceptaronReto(String Retado){
+        Partida p= new Partida(this,Retado);
+    }
+    
 }

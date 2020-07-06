@@ -193,4 +193,15 @@ public class Servidor {
           }
       }
   }
+  
+  public static void RetoAceptado(String Retado,String Retador){
+      for (Cliente unusuario : usuariosConectados){
+          if(unusuario.getUsuario().equals(Retador)){
+              unusuario.AceptaronReto(Retado);
+          }
+      }
+  }
+  
+  
+  
 }
