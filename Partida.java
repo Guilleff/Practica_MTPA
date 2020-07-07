@@ -3,8 +3,6 @@ package piedrapapeltijera;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,7 +10,8 @@ import javax.swing.WindowConstants;
 
 
 public class Partida extends JFrame implements Runnable,ActionListener{
-    private Cliente usuario;
+    
+    private String usuario;
     private String contrincante;
     
     private JLabel Tu;
@@ -29,6 +28,12 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     private JLabel TandasRestantes;
     private JLabel Tiempo;
     
+    private String accion=null;
+    private int ganadas=0;
+    private int perdida=0;
+    private int empate=0;
+    private boolean pierdo=false;
+    
     //esto solo sirve para comprobar sin tener que venir desde cliente 
     /*public static void main(String args[]){
         Partida p=new Partida();
@@ -42,7 +47,7 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     //hasta aqui
     
     
-    public Partida(Cliente usuario, String contrincante){
+    public Partida(String usuario, String contrincante){
         this.usuario=usuario;
         this.contrincante=contrincante;
         Thread hiloPartida = new Thread(this);
@@ -53,41 +58,62 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     public void run(){
         //aqui meter la logica de la partida
         initComponents();
-        int tiempo=5;
+        int tiempo;
         int tandas=3;
-        int ganadas=0;
-        while(ganadas<2 || tandas>1){
-            //esto esta mal,usar un timer o me da IllegalMonitorStateException
+        String AccionDeContrincante;
+        while(ganadas<2 || tandas>0 || pierdo==false){
             try {
-                usuario.wait(1000);
-                tiempo--;
+                //seguir aqui
+                for(tiempo=5;tiempo>=0;tiempo--){
+                    //cambiar esto que da error, no pilla bien la accion si esta parado el hilo
+                    Thread.sleep(1000);
+                    Tiempo.setText("Tiempo de ronda:"+tiempo+"s");
+                }
+                if(accion==null){
+                    accion="Piedra";
+                }
                 
-                
-                
+                Thread.sleep(1000);
+                AccionDeContrincante=Servidor.AccionDeContrincante(usuario,contrincante);
+                /*if(AccionDeContrincante==null){
+                    AccionDeContrincante="Piedra";
+                }*/
+                GanadorTanda(accion,AccionDeContrincante);
+                BotonesEnabled();
+                TandasGanadas.setText("Tandas Ganadas:"+ganadas);
+                TandasRestantes.setText("Tandas Restantes:"+(tandas--));
+                accion=null;    
             } catch (InterruptedException ex) {
-                System.out.println("No se puede detener el hilo");
+                System.out.println("No se pudo parar el hilo");
             }
         }
-        
+        if(ganadas==2){
+            Servidor.HeGanadoA(usuario,contrincante);
+        }
         
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==Piedra){
-            usuario.setAccion("Piedra");
-            //deshabilitar los otros 2 botones
+            setAccion("Piedra");
+            Papel.setEnabled(false);
+            Tijera.setEnabled(false);
         }
         else if(e.getSource()==Papel){
-            usuario.setAccion("Papel");
+            setAccion("Papel");
+            Piedra.setEnabled(false);
+            Tijera.setEnabled(false);
         }
         else if(e.getSource()==Tijera){
-            usuario.setAccion("Tijera");
+            setAccion("Tijera");
+            Piedra.setEnabled(false);
+            Papel.setEnabled(false);
         }
     }
     
     public void initComponents(){
-        this.setTitle("Partida de "+usuario.getUsuario());
+        this.setTitle("Partida de "+getUsuario());
         this.setSize(400, 475);
         this.setLayout(null);
         
@@ -131,10 +157,64 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         add(TandasRestantes);
         TandasRestantes.setBounds(50,375,150,20);
         add(Tiempo);
-        Tiempo.setBounds(300,375,100,20);
+        Tiempo.setBounds(200,375,200,20);
         
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//quitar pero no ahora, me sirve para comprobar
     }
+    
+    public void GanadorTanda(String accion,String accionContrincante){
+        if((accion.equals("Piedra") && accionContrincante.equals("Tijera")) || (accion.equals("Papel")&&accionContrincante.equals("Piedra")) ||
+           (accion.equals("Tijera") && accionContrincante.equals("Papel"))){
+            ganadas++;
+        }
+        else if(accion.equals(accionContrincante)){
+            empate++;
+        }
+        else{
+            perdida++;
+        }
+    }
+    
+    public void BotonesEnabled(){
+        Piedra.setEnabled(true);
+        Papel.setEnabled(true);
+        Tijera.setEnabled(true);
+    }
+    
+    public void HasPerdido(){
+        pierdo=true;
+    }
+    
+    
+    
+    public String getAccion() {
+        return accion;
+    }
+
+    
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+    
+    public String getUsuario() {
+        return usuario;
+    }
+
+  
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+   
+    public String getContrincante() {
+        return contrincante;
+    }
+
+    
+    public void setContrincante(String contrincante) {
+        this.contrincante = contrincante;
+    }
+    
 }

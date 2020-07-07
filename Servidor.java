@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class Servidor {
     
     private static ArrayList<Cliente> usuariosConectados = new ArrayList<>();
+    private static ArrayList<Partida> partidasEnCurso = new ArrayList<>();
     
     public static void main (String args[]) throws Exception
   {
@@ -195,9 +196,25 @@ public class Servidor {
   }
   
   public static void RetoAceptado(String Retado,String Retador){
-      for (Cliente unusuario : usuariosConectados){
-          if(unusuario.getUsuario().equals(Retador)){
-              unusuario.AceptaronReto(Retado);
+      Partida P=new Partida(Retado,Retador);
+      Partida P2=new Partida(Retador,Retado);
+      partidasEnCurso.add(P);
+      partidasEnCurso.add(P2);
+  }
+  
+  public static String AccionDeContrincante(String usuario,String contrincan){
+      for(Partida aux:partidasEnCurso){
+          if(aux.getUsuario().equals(contrincan) && aux.getContrincante().equals(usuario)){
+              return aux.getAccion();
+          }
+      }
+      return "";
+  }
+  
+  public static void HeGanadoA(String usuario,String contrincan){
+    for(Partida aux:partidasEnCurso){
+          if(aux.getUsuario().equals(contrincan) && aux.getContrincante().equals(usuario)){
+              aux.HasPerdido();
           }
       }
   }

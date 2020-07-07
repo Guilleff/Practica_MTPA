@@ -46,8 +46,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     private DefaultListModel<String>model=new DefaultListModel<>();
     private ArrayList<String> otrosUsuarios=new ArrayList<String>();
     
-    private String accion;
-    
     public Cliente(Socket sck,String user,String passw){
         try{
         this.sckCliente=sck;
@@ -80,10 +78,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
             }
         }
         else if(e.getSource()==AceptarReto){
-            //seguir aqui
-            Partida p= new Partida(this,Retador);//esto esta mal todavia,faltan cosas
             Servidor.RetoAceptado(usuario,Retador);
-            
         }
         else if(e.getSource()==RechazarReto){
             Servidor.RetoRechazado(usuario, Retador);
@@ -96,8 +91,9 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         this.setTitle(getUsuario());
         this.setSize(380,450);
         this.setLayout(null);
+        this.setAlwaysOnTop(true);
         
-        RetarA=new JLabel("Indica el jugador que retar");//clica sobre el jugador, esto ponerlo mejor
+        RetarA=new JLabel("Indica el jugador que retar");
         RetarAText=new JTextField(20);
         RetarAButton=new JButton("Enviar Reto");
         
@@ -105,7 +101,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         
         UsuariosConectados=new JList(model);
         
-        RetadoPor=new JLabel("No tienes retos pendientes");//"Has sido retado por:"+usuario
+        RetadoPor=new JLabel("No tienes retos pendientes");
         AceptarReto= new JButton("Aceptar");
         RechazarReto= new JButton("Rechazar");
         
@@ -156,14 +152,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         return usuario;
     }
     
-    public String getAccion() {
-        return accion;
-    }
-
     
-    public void setAccion(String accion) {
-        this.accion = accion;
-    }
 
     public void ActualizarJList(){
         
@@ -207,8 +196,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         JOptionPane.showMessageDialog(this, "El usuario "+Retado+" no acepto tu reto", "Reto rechazado", JOptionPane.INFORMATION_MESSAGE, null);
     }
     
-    public void AceptaronReto(String Retado){
-        Partida p= new Partida(this,Retado);
-    }
+    
     
 }
