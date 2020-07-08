@@ -93,40 +93,23 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
             System.out.println("No se pudo conectar con el servidor");
         }
     }
-    //seguir aqui
     @Override
     public void run(){
        try {
-            //hay que mandar las dos cosas juntas, ponlo en un mensaje de bytes(nuevo metodo)
             this.flujoEscritura.write(toString(usuarioText.getText(),contraseñaText.getText(),accion).getBytes("UTF-8"));
-            System.out.println(toString(usuarioText.getText(),contraseñaText.getText(),accion));//borrar
-            //aqui bucle de leer
-            
                 byte[] buffer = new byte[16];
-                int nb; //Cuantos bytes he leido
+                int nb; 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 do{
-                    nb = flujoLectura.read(buffer); //suma@389@556
+                    nb = flujoLectura.read(buffer); 
                     baos.write(buffer, 0, nb);
                 }while (nb > 0 && flujoLectura.available() > 0);
-                
                 Mensaje msg=Mensaje.CrearMensaje(baos.toByteArray());
-                
-                System.out.println(msg.getAccion());
-                
                 LlamarAccionLogin(msg);
-                
-                
-                String loquemeLlega = new String(baos.toByteArray());
-                System.out.println(loquemeLlega);
-            
-            
        } catch (IOException ex) {
            System.out.println("No se pudo enviar el mensaje");
        }
     }
-    
-    
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -180,7 +163,6 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
                 break;
             case "DenegadoE":
                 try {
-                    //cerrar sck creo
                     cliente.close();
                 } catch (IOException ex) {
                     System.out.println("No se pudo cerrar el socket");
@@ -189,6 +171,4 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
                 break;
         }
     }
-    
-    
 }

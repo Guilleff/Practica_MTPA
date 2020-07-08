@@ -3,7 +3,6 @@ package piedrapapeltijera;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -27,43 +26,25 @@ public class Servidor {
     ServerSocket srv = new ServerSocket(9998);
     System.out.println("Servidor Arrancado");
     do{
-        Socket sck =  srv.accept();  
-        System.out.println("Alguien conectado...");
+        Socket sck =  srv.accept();
         InputStream is = sck.getInputStream();
         OutputStream os= sck.getOutputStream();
         byte[] buffer = new byte[16];
-        int nb; //Cuantos bytes he leido
+        int nb;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         do{
 
-            nb = is.read(buffer); //suma@389@556
+            nb = is.read(buffer);
             baos.write(buffer, 0, nb);
-
-
         }while (nb > 0 && is.available() > 0);
-        
         Mensaje msg=Mensaje.CrearMensaje(baos.toByteArray());
-        
-        
-        
         String permiso=LlamarAccion(msg,sck);
-        
         Mensaje mensajeCliente=Mensaje.CrearMensajeConParametros(permiso, msg.getParam1(), msg.getParam2());
         os.write(mensajeCliente.toString().getBytes("UTF-8"));
-        
-        
-        
-        /*
-        String loquemeLlega = new String(baos.toByteArray());
-        System.out.println(loquemeLlega);*/
     }while (true);
-    
-    
-    
   }
   
   public static String LlamarAccion(Mensaje msg,Socket socket){
-      //implementar logica del server
       try{
         switch(msg.getAccion()){
             case "Acceso":
@@ -98,7 +79,7 @@ public class Servidor {
                 break;
         }
       }catch(Exception ex){
-          
+          System.out.println("Error");
       }
       return "Error inesperado";
   }
@@ -139,7 +120,6 @@ public class Servidor {
           String usuario = parte[0];
           String contraseña = parte[1];
           if(user.equals(usuario)){
-              //el usuario ya existe por lo que no se puede volver a registrar
               ficheroLeer.close();
               return false;
         }
@@ -208,7 +188,7 @@ public class Servidor {
               return aux.getAccion();
           }
       }
-      return "";
+      return "Piedra";
   }
   
   public static void HeGanadoA(String usuario,String contrincan){
@@ -219,6 +199,19 @@ public class Servidor {
       }
   }
   
-  
+  public static void EliminarPartida(String usuario,String contrincan){
+      ArrayList<Partida> listaAux=new ArrayList<Partida>();
+      for(Partida p: partidasEnCurso){
+          if(p.getUsuario().equals(usuario) && p.getContrincante().equals(contrincan)){
+              listaAux.add(p);
+          }
+      }
+      partidasEnCurso.removeAll(listaAux);
+      for(Partida p: partidasEnCurso){
+          if(p.getUsuario().equals(contrincan) && p.getContrincante().equals(usuario)){
+              p.GanadaPorRendicion();
+          }
+      }
+  }
   
 }

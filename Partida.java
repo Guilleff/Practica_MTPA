@@ -3,11 +3,12 @@ package piedrapapeltijera;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.WindowConstants;
-
+import javax.swing.JOptionPane;
 
 public class Partida extends JFrame implements Runnable,ActionListener{
     
@@ -28,24 +29,14 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     private JLabel TandasRestantes;
     private JLabel Tiempo;
     
-    private String accion=null;
-    private int ganadas=0;
+    private String accion="Piedra";
+    private float TandasTotales=3;
+    private float ganadas=0;
     private int perdida=0;
-    private int empate=0;
+    private float empate=0;
     private boolean pierdo=false;
-    
-    //esto solo sirve para comprobar sin tener que venir desde cliente 
-    /*public static void main(String args[]){
-        Partida p=new Partida();
-    }
-    
-   
-    public Partida(){
-        Thread hiloPartida = new Thread(this);
-        hiloPartida.start();
-    }*/
-    //hasta aqui
-    
+    private boolean empatamos=false;
+    private boolean gano=false;
     
     public Partida(String usuario, String contrincante){
         this.usuario=usuario;
@@ -56,39 +47,42 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     
     @Override
     public void run(){
-        //aqui meter la logica de la partida
         initComponents();
         int tiempo;
-        int tandas=3;
+        int tandas=(int)TandasTotales;
         String AccionDeContrincante;
-        while(ganadas<2 || tandas>0 || pierdo==false){
+        while(((TandasTotales-empate)/2)>ganadas && pierdo==false && tandas!=0 && gano==false){
             try {
                 //seguir aqui
                 for(tiempo=5;tiempo>=0;tiempo--){
-                    //cambiar esto que da error, no pilla bien la accion si esta parado el hilo
                     Thread.sleep(1000);
                     Tiempo.setText("Tiempo de ronda:"+tiempo+"s");
                 }
-                if(accion==null){
-                    accion="Piedra";
-                }
-                
                 Thread.sleep(1000);
                 AccionDeContrincante=Servidor.AccionDeContrincante(usuario,contrincante);
-                /*if(AccionDeContrincante==null){
-                    AccionDeContrincante="Piedra";
-                }*/
+                BotonContrincante(AccionDeContrincante);
+                Thread.sleep(2000);
                 GanadorTanda(accion,AccionDeContrincante);
                 BotonesEnabled();
-                TandasGanadas.setText("Tandas Ganadas:"+ganadas);
-                TandasRestantes.setText("Tandas Restantes:"+(tandas--));
-                accion=null;    
+                TandasGanadas.setText("Tandas Ganadas:"+(int)ganadas);
+                tandas--;
+                TandasRestantes.setText("Tandas Restantes:"+tandas);
+                accion="Piedra";    
+                BotonesContrincanteNull();
             } catch (InterruptedException ex) {
                 System.out.println("No se pudo parar el hilo");
             }
         }
-        if(ganadas==2){
+        if(((TandasTotales-empate)/2)<ganadas || gano==true){
             Servidor.HeGanadoA(usuario,contrincante);
+            JOptionPane.showMessageDialog(this, "Enhorabuena, has ganado", "Victoria", JOptionPane.INFORMATION_MESSAGE, null);
+        }
+        else if(empate==TandasTotales){
+            JOptionPane.showMessageDialog(this, "Ninguno ha ganado, es un empate", "Empate", JOptionPane.INFORMATION_MESSAGE, null);
+            empatamos=true;
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Has perdido,mejor suerte la proxima vez", "Derrota", JOptionPane.INFORMATION_MESSAGE, null);
         }
         
     }
@@ -161,7 +155,18 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         
         this.setAlwaysOnTop(true);
         this.setVisible(true);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//quitar pero no ahora, me sirve para comprobar
+        
+        addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+                Servidor.EliminarPartida(usuario,contrincante);
+                pierdo=true;
+                dispose();
+        }
+        });
+
+        
+        
     }
     
     public void GanadorTanda(String accion,String accionContrincante){
@@ -187,7 +192,29 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         pierdo=true;
     }
     
+    public void GanadaPorRendicion(){
+        gano=true;
+    }
     
+    public void BotonContrincante(String AccionContrincante){
+        switch(AccionContrincante){
+            case "Piedra":
+                PiedraNull.setEnabled(true);
+                break;
+            case "Papel":
+                PapelNull.setEnabled(true);
+                break;
+            case "Tijera":
+                TijeraNull.setEnabled(true);
+                break;
+        }
+    }
+    
+    public void BotonesContrincanteNull(){
+        PiedraNull.setEnabled(false);
+        PapelNull.setEnabled(false);
+        TijeraNull.setEnabled(false);
+    }
     
     public String getAccion() {
         return accion;

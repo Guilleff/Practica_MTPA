@@ -5,12 +5,10 @@ import java.nio.charset.Charset;
 
 
 public class Mensaje {
-
     
     private String accion;
     private String param1;
     private String param2;
-    
     
     public static void Mensaje(){
         
@@ -34,12 +32,10 @@ public class Mensaje {
         msg.setParam1(tokens[1]);
         msg.setParam2(tokens[2]);
         }catch(Exception ex){
-            
+            System.out.println("Error");
         }
         return msg;
     }
-    
-    
    
     public String getAccion() {
         return accion;

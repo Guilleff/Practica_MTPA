@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,9 +20,6 @@ import javax.swing.JTextField;
 
 
 public class Cliente extends JFrame implements ActionListener,Runnable{
-
-    
-    
     
     private Socket sckCliente;
     private InputStream flujoLectura;
@@ -55,7 +51,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         this.contraseña=passw;
         Thread hiloCliente = new Thread(this);
         hiloCliente.start();
-        
         }catch(IOException ex){
             System.out.println("No se pudo conectar con el servidor");
         }
@@ -78,6 +73,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
             }
         }
         else if(e.getSource()==AceptarReto){
+            EsconderBotonesReto();
             Servidor.RetoAceptado(usuario,Retador);
         }
         else if(e.getSource()==RechazarReto){
@@ -92,15 +88,11 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         this.setSize(380,450);
         this.setLayout(null);
         this.setAlwaysOnTop(true);
-        
         RetarA=new JLabel("Indica el jugador que retar");
         RetarAText=new JTextField(20);
         RetarAButton=new JButton("Enviar Reto");
-        
         UsuariosInfo=new JLabel("Usuarios conectados");
-        
         UsuariosConectados=new JList(model);
-        
         RetadoPor=new JLabel("No tienes retos pendientes");
         AceptarReto= new JButton("Aceptar");
         RechazarReto= new JButton("Rechazar");
@@ -112,14 +104,10 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         add(RetarAButton);
         RetarAButton.setBounds(30, 90, 100, 30);
         RetarAButton.addActionListener(this);
-        
         add(UsuariosInfo);
         UsuariosInfo.setBounds(212, 20, 150, 30);
         add(UsuariosConectados);
         UsuariosConectados.setBounds(200, 55, 150, 300);
-        
-        
-        
         add(RetadoPor);
         RetadoPor.setBounds(15, 220, 175, 30);
         add(AceptarReto);
@@ -130,10 +118,7 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         RechazarReto.addActionListener(this);
         EsconderBotonesReto();
         
-        
-        
         this.setVisible(true);
-        
         
         addWindowListener(new WindowAdapter() {
         @Override
@@ -155,7 +140,6 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     
 
     public void ActualizarJList(){
-        
         otrosUsuarios=Servidor.ListarClientes();
         String[] aux = otrosUsuarios.toArray(new String[otrosUsuarios.size()]);
         model.clear();
@@ -195,7 +179,5 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     public void RechazaronReto(String Retado){
         JOptionPane.showMessageDialog(this, "El usuario "+Retado+" no acepto tu reto", "Reto rechazado", JOptionPane.INFORMATION_MESSAGE, null);
     }
-    
-    
     
 }
