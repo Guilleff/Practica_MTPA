@@ -10,7 +10,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+/**
+ * Clase en la que se lleva a cabo las partidas entre dos usuarios
+ * @author david
+ * @version 1.0
+ */
+
 public class Partida extends JFrame implements Runnable,ActionListener{
+    
+    /**
+     * Definimos los objetos que vamos a usar en nuestra clase
+     */
     
     private String usuario;
     private String contrincante;
@@ -37,6 +47,12 @@ public class Partida extends JFrame implements Runnable,ActionListener{
     private boolean pierdo=false;
     private boolean empatamos=false;
     private boolean gano=false;
+    
+    /**
+     * Metodo que empieza una partida entre dos usuarios
+     * @param usuario un usuario
+     * @param contrincante otro usuario
+     */
     
     public Partida(String usuario, String contrincante){
         this.usuario=usuario;
@@ -86,7 +102,12 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         }
         
     }
-
+    
+    /**
+     * Metodo que indica que accion se lleva a cabo en la partida
+     * @param e 
+     */
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==Piedra){
@@ -105,6 +126,11 @@ public class Partida extends JFrame implements Runnable,ActionListener{
             Papel.setEnabled(false);
         }
     }
+    
+    /**
+     * Metodo que inicializa los componentes y los botones de la partida, tanto
+     * del usuario como del oponente
+     */
     
     public void initComponents(){
         this.setTitle("Partida de "+getUsuario());
@@ -169,6 +195,12 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         
     }
     
+    /**
+     * Metodo que suma rondas ganadas o perdidas
+     * @param accion accion que realiza el usuario
+     * @param accionContrincante accion que realiza el oponente
+     */
+    
     public void GanadorTanda(String accion,String accionContrincante){
         if((accion.equals("Piedra") && accionContrincante.equals("Tijera")) || (accion.equals("Papel")&&accionContrincante.equals("Piedra")) ||
            (accion.equals("Tijera") && accionContrincante.equals("Papel"))){
@@ -182,19 +214,36 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         }
     }
     
+    /**
+     * Metodo que muestra los botones de pieddra, papel y tijera
+     */
+    
     public void BotonesEnabled(){
         Piedra.setEnabled(true);
         Papel.setEnabled(true);
         Tijera.setEnabled(true);
     }
     
+    /**
+     * Metodo que indica que has perdido
+     */
+    
     public void HasPerdido(){
         pierdo=true;
     }
     
+    /**
+     * Metodo que indica que has ganado
+     */
+    
     public void GanadaPorRendicion(){
         gano=true;
     }
+    
+    /**
+     * Metodo que muestra los botones del oponente
+     * @param AccionContrincante 
+     */
     
     public void BotonContrincante(String AccionContrincante){
         switch(AccionContrincante){
@@ -209,6 +258,10 @@ public class Partida extends JFrame implements Runnable,ActionListener{
                 break;
         }
     }
+    
+    /**
+     * Metodo que oculta los botones del oponente
+     */
     
     public void BotonesContrincanteNull(){
         PiedraNull.setEnabled(false);

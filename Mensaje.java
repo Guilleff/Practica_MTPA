@@ -3,8 +3,18 @@ package piedrapapeltijera;
 
 import java.nio.charset.Charset;
 
+/**
+ * Clase mensaje envia un mensaje a otras clase con las acciones que debe realizar
+ * y los parametros que usa
+ * @author david
+ * @version 1.0
+ */
 
 public class Mensaje {
+    
+    /**
+     * Obejtos que vamos a usar en la clase
+     */
     
     private String accion;
     private String param1;
@@ -14,6 +24,14 @@ public class Mensaje {
         
     }
     
+    /**
+     * Metodo que crea mensajes dependiendo de los parametros recibidos
+     * @param accion_ la accion que se debe ejecutar
+     * @param param1_
+     * @param param2_
+     * @return devuelve msg
+     */
+    
     public static Mensaje CrearMensajeConParametros(String accion_,String param1_,String param2_){
         Mensaje msg=new Mensaje();
         msg.setAccion(accion_);
@@ -21,6 +39,12 @@ public class Mensaje {
         msg.setParam2(param2_);
         return msg;
     }
+    
+    /**
+     * Metodo que crea los mensajes 
+     * @param buffer
+     * @return devuelve msg
+     */
     
     public static Mensaje CrearMensaje(byte[] buffer){
         Mensaje msg=null;

@@ -18,8 +18,18 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+/**
+ * Clase Cliente muestra los jugadores retados y los retos aceptados o rechazados
+ * y los jugadores conectados
+ * @author david
+ * @version 1.0
+ */
 
 public class Cliente extends JFrame implements ActionListener,Runnable{
+    
+    /**
+     *Definimoms todos los objetos que usamos en la clase 
+     */
     
     private Socket sckCliente;
     private InputStream flujoLectura;
@@ -42,6 +52,13 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     private DefaultListModel<String>model=new DefaultListModel<>();
     private ArrayList<String> otrosUsuarios=new ArrayList<String>();
     
+    /**
+     * Metodo cliente se conecta con el servidor
+     * @param sck
+     * @param user usuario concetado
+     * @param passw contraseña del usuario
+     */
+    
     public Cliente(Socket sck,String user,String passw){
         try{
         this.sckCliente=sck;
@@ -60,6 +77,11 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
     public void run(){
         initComponents();
     }
+    
+    /**
+     * Metodo que nos permite retar a otro jugador y aceptar o no los retos
+     * @param e 
+     */
     
     @Override
     public void actionPerformed(ActionEvent e){
@@ -81,7 +103,11 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
             EsconderBotonesReto();
         }
     }
-       
+    
+    /**
+     * Metodo que inicializa los componentes antes de una partida
+     */
+    
     public void initComponents(){
         
         this.setTitle(getUsuario());
@@ -137,8 +163,10 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         return usuario;
     }
     
+    /**
+     * Metodo que actualiza la lista de clientes
+     */
     
-
     public void ActualizarJList(){
         otrosUsuarios=Servidor.ListarClientes();
         String[] aux = otrosUsuarios.toArray(new String[otrosUsuarios.size()]);
@@ -162,6 +190,11 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         return false;
     }
     
+    /**
+     * Metodo que muestra por quien hemos sido retado
+     * @param RetadoP jugador que reta 
+     */
+    
     public void RetadoPor(String RetadoP){
         Retador=RetadoP;
         RetadoPor.setText("Tienes un reto de "+Retador);
@@ -170,11 +203,20 @@ public class Cliente extends JFrame implements ActionListener,Runnable{
         RechazarReto.setVisible(true);
     }
     
+    /**
+     * Metodo que esconde los botones que se utilizan para retar
+     */
+    
     public void EsconderBotonesReto(){
         RetadoPor.setVisible(false);
         AceptarReto.setVisible(false);
         RechazarReto.setVisible(false);
     }
+   
+    /**
+     * Metodo que se usa cuando rechazamos un reto
+     * @param Retado jugador que ha recibido un reto
+     */
     
     public void RechazaronReto(String Retado){
         JOptionPane.showMessageDialog(this, "El usuario "+Retado+" no acepto tu reto", "Reto rechazado", JOptionPane.INFORMATION_MESSAGE, null);

@@ -19,9 +19,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+/**
+ * Clase IULogin muestra la pantalla en la que se registran los usuarios o se inicia
+ * sesion
+ * @author david
+ * @version 1.0
+ */
 
 public class IULogin extends JFrame implements ActionListener,Runnable{
 
+    /**
+     * Definimos los objetos que vamos a usar en la clase
+     */
+    
     private JButton AccesoBoton;
     private JButton RegistroBoton;
     private JTextField usuarioText;
@@ -46,6 +56,12 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         initComponents();
         
     }
+    
+    /**
+     * Metodo que inicia la pantalla para que se inicie sesion o se registre un
+     * usuario
+     */
+    
     public void initComponents(){
         
         this.setTitle("IULogin");
@@ -80,6 +96,10 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
         
     }
     
+    /**
+     * Metodo que inicia la comunicacion con el servidor
+     */
+    
     public void initComunication(){
         try{
             cliente = new Socket("127.0.0.1", 9998);  
@@ -110,6 +130,11 @@ public class IULogin extends JFrame implements ActionListener,Runnable{
            System.out.println("No se pudo enviar el mensaje");
        }
     }
+    
+    /**
+     * Metodo que indica la accion que se realiza al inicio o registro
+     * @param e 
+     */
     
     @Override
     public void actionPerformed(ActionEvent e) {
