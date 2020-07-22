@@ -228,5 +228,18 @@ public class ServidorTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+
+    /**
+     * Test of PartidasFinalizadas method, of class Servidor.
+     */
+    @Test
+    public void testPartidasFinalizadas() {
+        System.out.println("PartidasFinalizadas");
+        String usuario = "user1";
+        String contrincan = "user2";
+        Servidor.PartidasFinalizadas(usuario, contrincan);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
     
 }

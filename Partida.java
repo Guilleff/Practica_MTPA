@@ -186,6 +186,7 @@ public class Partida extends JFrame implements Runnable,ActionListener{
         @Override
         public void windowClosing(WindowEvent e) {
                 Servidor.EliminarPartida(usuario,contrincante);
+                Servidor.PartidasFinalizadas(usuario, contrincante);
                 pierdo=true;
                 dispose();
         }

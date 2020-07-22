@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Clase servidor en la que se conectan los usuarios y se guardan las partidas
@@ -307,5 +309,19 @@ public class Servidor {
           }
       }
   }
+  
+  /**
+   * Metodo que nos indica las partidas que han finalizado
+   * @param usuario
+   * @param contrincan 
+   */
+  
+    public static void PartidasFinalizadas(String usuario,String contrincan){
+        for(Partida p: partidasEnCurso){
+            System.out.println("Partida entre " + p.getContrincante() + " y " + p.getUsuario());
+            
+        }
+        
+    }
   
 }
